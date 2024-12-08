@@ -1,0 +1,211 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "MoSS Schema Definition",
+    "type": "object",
+    "required": [
+        "name",
+        "version",
+        "members"
+    ],
+    "properties": {
+        "name": {
+            "title": "Name",
+            "description": "The name of schema or target device",
+            "type": "string",
+            "minLength": 1
+        },
+        "version": {
+            "title": "Version",
+            "description": "The version of current configuration",
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)$",
+            "default": "0.0"
+        },
+        "byte-order": {
+            "title": "Byte Order",
+            "description": "Word/DWord byte order used on a Modbus device",
+            "type": "string",
+            "enum": [
+                "abcd",
+                "badc",
+                "cdab",
+                "dcba"
+            ],
+            "default": "abcd"
+        },
+        "members": {
+            "$ref": "#/definitions/MembersTree"
+        }
+    },
+    "definitions": {
+        "MembersTree": {
+            "title": "Members",
+            "description": "Registers or groups contained in the current group",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/MembersTreeNode"
+            },
+            "additionalProperties": false
+        },
+        "MembersTreeNode": {
+            "type": "object",
+            "if": {
+                "anyOf": [
+                    {
+                        "not": {
+                            "properties": {
+                                "type": {
+                                    "const": "group"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "type": {
+                                "type": "null"
+                            }
+                        }
+                    }
+                ]
+            },
+            "then": {
+                "$ref": "#/definitions/RegisterMember"
+            },
+            "else": {
+                "$ref": "#/definitions/GroupMember"
+            }
+        },
+        "GroupMember": {
+            "required": [
+                "name",
+                "members"
+            ],
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/Type"
+                },
+                "name": {
+                    "$ref": "#/definitions/Name"
+                },
+                "members": {
+                    "$ref": "#/definitions/MembersTree"
+                }
+            },
+            "additionalProperties": false
+        },
+        "RegisterMember": {
+            "required": [
+                "name",
+                "address"
+            ],
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/Type"
+                },
+                "name": {
+                    "$ref": "#/definitions/Name"
+                },
+                "address": {
+                    "title": "Address",
+                    "description": "Register address in Modbus register map on server side",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                },
+                "read-write": {
+                    "title": "Read/Write",
+                    "description": "Access flags to restrict register read or write operations",
+                    "type": "string",
+                    "pattern": "^([rw]{1,2})$",
+                    "default": "rw"
+                },
+                "description": {
+                    "title": "Description",
+                    "description": "Can be multi-line",
+                    "type": "string"
+                },
+                "format": {
+                    "title": "Format",
+                    "description": "Display format for register. Defines component that will be used.\n\"combo\": use drop-down list (must provide at least one \"variants\" entry)\n\"button\": display Set/Reset button (use with bool only)\n\"flags<N>\": display value as bit sequence",
+                    "type": "string",
+                    "enum": [
+                        "combo",
+                        "button",
+                        "flags8",
+                        "flags16",
+                        "flags32"
+                    ]
+                },
+                "variants": {
+                    "title": "Variants",
+                    "description": "A strict set of parameters used in the drop-down list (format: \"combo\")",
+                    "type": "object",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "patternProperties": {
+                            "^.*$": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 65535
+                            }
+                        }
+                    }
+                },
+                "min": {
+                    "title": "Min",
+                    "description": "Minimum value of the register",
+                    "type": "number"
+                },
+                "max": {
+                    "title": "Max",
+                    "description": "Maximum value of the register",
+                    "type": "number"
+                },
+                "default": {
+                    "title": "Default",
+                    "description": "Default (initial) value of the register",
+                    "type": "number"
+                },
+                "if": {
+                    "properties": {
+                        "format": {
+                            "const": "combo"
+                        }
+                    }
+                },
+                "then": {
+                    "required": [
+                        "variants"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "Type": {
+            "title": "Type",
+            "description": "Specifies the node type. If the type is \"group\", a separate branch will be created",
+            "type": "string",
+            "enum": [
+                "group",
+                "int16",
+                "uint16",
+                "int32",
+                "uint32",
+                "float32",
+                "bool"
+            ],
+            "default": "uint16"
+        },
+        "Name": {
+            "title": "Name",
+            "description": "Specifies the name of a register or group header",
+            "type": "string",
+            "minLength": 1
+        },
+        "additionalProperties": false
+    }
+}
