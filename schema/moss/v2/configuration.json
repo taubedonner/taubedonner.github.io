@@ -36,32 +36,37 @@
             "default": "abcd"
         },
         "flip-rules": {
+            "title": "Byte Flip Rules",
             "type": "object",
             "description": "Rules for flipping bytes, words, and double words in a Modbus packet. Each rule has a number that tells the order in which it will be applied. If the number is negative (<0), the rule will NOT be applied. Lower numbers are executed first (e.g., 1 runs before 2).",
             "properties": {
                 "reverse-bytes": {
-                "type": "integer",
-                "description": "Reverse the order of ALL bytes in the packet. Example: if the packet is [1, 2, 3, 4], after reversing it becomes [4, 3, 2, 1].",
-                "minimum": -1
+                    "title": "Reverse Bytes",
+                    "type": "integer",
+                    "description": "Reverse the order of ALL bytes in the packet. Example: if the packet is [1, 2, 3, 4], after reversing it becomes [4, 3, 2, 1].",
+                    "minimum": -1
                 },
                 "flip-bytes": {
-                "type": "integer",
-                "description": "Swap individual bytes at specified positions. Example: if the packet is [1, 2, 3, 4], swapping bytes at positions 1 and 4 results in [4, 2, 3, 1].",
-                "minimum": -1
+                    "title": "Flip Bytes",
+                    "type": "integer",
+                    "description": "Swap individual bytes at specified positions. Example: if the packet is [1, 2, 3, 4], swapping bytes at positions 1 and 4 results in [4, 2, 3, 1].",
+                    "minimum": -1
                 },
                 "flip-words": {
-                "type": "integer",
-                "description": "Swap 2-byte words (16 bits) at specified positions. Example: if the packet is [1, 2, 3, 4], where [1, 2] is one word and [3, 4] is another, swapping them results in [3, 4, 1, 2].",
-                "minimum": -1
+                    "title": "Flip Words",
+                    "type": "integer",
+                    "description": "Swap 2-byte words (16 bits) at specified positions. Example: if the packet is [1, 2, 3, 4], where [1, 2] is one word and [3, 4] is another, swapping them results in [3, 4, 1, 2].",
+                    "minimum": -1
                 },
                 "flip-dwords": {
-                "type": "integer",
-                "description": "Swap 4-byte double words (32 bits) at specified positions. Example: if the packet is [1, 2, 3, 4, 5, 6, 7, 8], where [1, 2, 3, 4] is one double word and [5, 6, 7, 8] is another, swapping them results in [5, 6, 7, 8, 1, 2, 3, 4].",
-                "minimum": -1
+                    "title": "Flip DWords",
+                    "type": "integer",
+                    "description": "Swap 4-byte double words (32 bits) at specified positions. Example: if the packet is [1, 2, 3, 4, 5, 6, 7, 8], where [1, 2, 3, 4] is one double word and [5, 6, 7, 8] is another, swapping them results in [5, 6, 7, 8, 1, 2, 3, 4].",
+                    "minimum": -1
                 }
             },
-        "additionalProperties": false,
-        "required": []
+            "additionalProperties": false,
+            "required": []
         },
         "members": {
             "$ref": "#/definitions/MembersTree"
