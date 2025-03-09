@@ -184,16 +184,14 @@
                     "description": "A strict set of parameters used in the drop-down list (format: \"combo\")",
                     "type": "object",
                     "minProperties": 1,
-                    "items": {
-                        "type": "object",
-                        "patternProperties": {
-                            "^.*$": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "maximum": 65535
-                            }
+                    "patternProperties": {
+                        ".*": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 65535
                         }
-                    }
+                    },
+                    "additionalProperties": false
                 },
                 "min": {
                     "title": "Min",
