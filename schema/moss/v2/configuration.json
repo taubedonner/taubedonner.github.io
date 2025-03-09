@@ -86,40 +86,45 @@
         "MembersTreeNode": {
             "type": "object",
             "if": {
-                "anyOf": [
+                "properties": {
+                    "type": {
+                        "const": "group"
+                    }
+                },
+                "required": [
+                    "type"
+                ]
+            },
+            "then": {
+                "$ref": "#/definitions/GroupMember"
+            },
+            "else": {
+                "allOf": [
                     {
-                        "not": {
-                            "properties": {
-                                "type": {
-                                    "const": "group"
-                                }
-                            }
-                        }
+                        "$ref": "#/definitions/RegisterMember"
                     },
                     {
                         "properties": {
                             "type": {
-                                "type": "null"
+                                "default": "uint16"
                             }
                         }
                     }
                 ]
-            },
-            "then": {
-                "$ref": "#/definitions/RegisterMember"
-            },
-            "else": {
-                "$ref": "#/definitions/GroupMember"
             }
         },
         "GroupMember": {
             "required": [
+                "type",
                 "name",
                 "members"
             ],
             "properties": {
                 "type": {
-                    "$ref": "#/definitions/Type"
+                    "title": "Type",
+                    "description": "The \"group\" member creates a new branch of properties",
+                    "type": "string",
+                    "const": "group"
                 },
                 "name": {
                     "$ref": "#/definitions/Name"
@@ -137,7 +142,8 @@
             ],
             "properties": {
                 "type": {
-                    "$ref": "#/definitions/Type"
+                    "$ref": "#/definitions/Type",
+                    "default": "uint16"
                 },
                 "name": {
                     "$ref": "#/definitions/Name"
@@ -177,7 +183,7 @@
                     "title": "Variants",
                     "description": "A strict set of parameters used in the drop-down list (format: \"combo\")",
                     "type": "object",
-                    "minItems": 1,
+                    "minProperties": 1,
                     "items": {
                         "type": "object",
                         "patternProperties": {
@@ -234,8 +240,7 @@
                 "float32",
                 "float64",
                 "bool"
-            ],
-            "default": "uint16"
+            ]
         },
         "Name": {
             "title": "Name",
